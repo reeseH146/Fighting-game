@@ -52,3 +52,5 @@ Stores objects of the current scene and attributes (E.g. POS)
 # Additional features : Settings, Tutorial, more keybind options, more assets(map, character(gif/img), sound,
 # additional objects, more gameplay changes(map objects, skills and mechanics of their interaction)),
 # add easter eggs like animation or something
+
+# This is another change which I am making to ensure that github and Pycharm works together otherwise I will have a fit after the amount of time I've spent trying to make this simple thing work which should have been coded properly but somehow someone hasnt' resolved this issue despite seeing so many other having it as well
