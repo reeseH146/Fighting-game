@@ -1,5 +1,5 @@
 # Introduction
- - Hello, this is our cooperative program by SAM and REESE
+ - Hello, this is our cooperative program by REESE
  - This is a fighting platformer in pycharm
 
 # Flow of game for user
