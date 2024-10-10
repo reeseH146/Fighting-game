@@ -1,6 +1,11 @@
 # --- This is a pygame fighting game ---
+import sys
 import pygame as pg
 import random as r
+pg.init()
+if not pg.get_init():
+    print("There was something wrong with the program *>*")
+    sys.exit()
 # import math
 
 # --- Sprite Class ---
@@ -85,29 +90,14 @@ class ButtonGEN:
     def move(self, position):
         pg.Rect.move(self.button, position[0], position[1])
 
-
-
-# --- Current Scene Generator ---
-# Can take multiple arguments, it will be stored in 2 list of either to be removed or added
-def CurrentSceneGEN(Scene, **PushPopOBJ):
-    # Adds all items in Push list to the current scene
-    Scene.append(PushPopOBJ[0])
-    # Checks if the objects to be removed are on scene before removing them
-    for items in PushPopOBJ[1]:
-        if items in Scene:
-            Scene.pop(items)
-    return Scene
-
 # --- Main ---
 # Loads the variables and constants
 WinSize = (1800, 900)
 Green = [0, 255, 0]
 currentDisplay = pg.Rect(0, 0, 1800, 1200)
-Scene = []
-Scene = CurrentSceneGEN(Scene, [currentDisplay])
 
 # Loads visual assets
-Icon = pg.image.load("Icon")
+Icon = pg.image.load("Game assets\Icon.png")
 Char1Still = pg.image.load("Game assets\Char1Still.png")
 
 # Sprite creation
@@ -126,7 +116,7 @@ pg.display.update()
 # The main loop which runs the game
 while True:
     for event in pg.event.get():
-        if (event.type == pg.QUIT) or (event.key == pg.K_ESCAPE):
+        if (event.type == pg.QUIT) or (event.type == pg.K_ESCAPE):
             pg.quit()
             print("Exited pygame")
             quit()
@@ -134,9 +124,9 @@ while True:
             if event.key == pg.K_w:
                 p1.moveForward()
         elif event.type == pg.KEYUP:
-            if event.key == pg.K_p:
+            if event.type == pg.K_p:
                 p1.punch(p2)
-            elif event.key == pg.K_k:
+            elif event.type == pg.K_k:
                 p1.kick(p2)
             """
             elif event.key == pg.K_h:
