@@ -20,34 +20,33 @@ class Spr:
         self.healTimes = 3
         self.mana = 100
 
-
     # Moves character forward by redrawing the whole scene then calculating change in position
     def moveForward(self):
         # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], currentDisplay)
+        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
         self.rect[0] += 7
-        Window.blit(Char1Still, [0, 0])
+        Window.blit(char1Still, self.rect)
 
     # Moves character backwards by redrawing the whole scene then calculating change in position
     def moveBackward(self):
         # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], currentDisplay)
+        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
         self.rect[0] -= 7
-        Window.blit(Char1Still, [0, 0])
+        Window.blit(char1Still, [0, 0])
 
         # Character jumps by redrawing the whole scene then calculating change in position
     def moveJump(self):
         # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], currentDisplay)
+        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
         self.rect[1] += 10
-        Window.blit(Char1Still, [0, 0])
+        Window.blit(char1Still, [0, 0])
 
         # Character crouches forward by redrawing the whole scene then calculating change in position
     def moveCrouch(self):
         # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], currentDisplay)
+        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
         self.rect[0] -= (1) ###Change this value based on the character size
-        Window.blit(Char1Still, [self.rect[0], ])
+        Window.blit(char1Still, [self.rect[0], ])
 
     # Punch is weaker than kick but faster
     @staticmethod
@@ -76,42 +75,77 @@ class Spr:
         randomNumber = r.randint(int(r.random() * mini), int(r.random() * maxi))
         return randomNumber
     """
+# --- Font generator ---
+"""
+Font class takes various arguments to create an instance of text with its attributes
+This makes it easier to place fonts during runtime as only the location will change
+ - Font and size creates the type of font that will be used with the text
+ - Text, Antialias, Text Colour and Background Colour are attributes of the text and its the text box
+ - Text is moved with a tuple which contains its new position     
+"""
+class FontGEN:
+    def __init__(self, font, size, text, antialias, textColour, backgroundColour):#, textBackground, textTransformation):
+        self.font = pg.font.Font(font, size)
+        self.text = self.font.render(text, antialias, textColour, backgroundColour)
+        self.rect = self.text.get_rect()
+        self.rect.center = (WinSize[0]//2, WinSize[1]//2)
 
+    # Renders the text onto the screen
+    def render(self):
+        Window.blit(self.text, self.rect)
+
+    # Changes the position of the textbox's centre with coordinates in tuple
+    def move(self, newPosition):
+        self.rect.center(newPosition[0], newPosition[1])
+        Window.blit(self.text, self.rect)
+
+
+"""
 # --- Button generator ---
+# Works similarly to the font generator but has interactivity
 class ButtonGEN:
-    def __init__(self, rect, position):
-        self.button = pg.rect.Rect(rect)
-        pg.draw.rect(Window, [000, 000, 000], self.button)
+    def __init__(self, type, rect, position):
+        if type == "Image":
+            self.rect = pg.rect.rect()
+        elif type == "Drawn":
+            self.rect = pg.rect.rect()
+            pg.draw.rect(Window, [000, 000, 000], self.button)
+"""
 
-    def kill(self):
-        displaySize = pg.display.get_window_size()
-        pg.Rect.move(self.button, displaySize[0], displaySize[1])
-
-    def move(self, position):
-        pg.Rect.move(self.button, position[0], position[1])
 
 # --- Main ---
 # Loads the variables and constants
-WinSize = (1800, 900)
-Green = [0, 255, 0]
-currentDisplay = pg.Rect(0, 0, 1800, 1200)
+WinSize = (900, 450)
+Clock = pg.time.Clock()
+stateInMenu = False
+stateInOptions = False
+stateInCharacterSelection = False
+stateInMapSelection = False
+stateInGame = False
 
-# Loads visual assets
-Icon = pg.image.load("Game assets\Icon.png")
-Char1Still = pg.image.load("Game assets\Char1Still.png")
+# Load assets - Loads assets such as images and fonts
+defaultFont = "Other assets\Agdasima\Agdasima-Regular.ttf"
+alternativeFont = "freesansbold.ttf"
+icon = pg.image.load("Game assets\Icon.png")
+char1Still = pg.image.load("Game assets\Char1Still.png")
+#char2Still = pg.image.load("Game assets\")
+#char3Still = pg.image.load("Game assets\")
 
-# Sprite creation
-p1 = Spr("player 1!!!", [300, 150, 20, 55], Char1Still)
-p2 = Spr("player 2!!!", [300, 150, 20, 55], Char1Still)
+
+
+# Sprite creation - Creates all sprites to be used in the game.
+p1 = Spr("player 1!!!", [300, 150, 20, 55], char1Still)
+p2 = Spr("player 2!!!", [300, 150, 20, 55], char1Still)
 
 # Loads the screen and visual assets onto the screen
-pg.display.set_icon(Icon)###
+pg.display.set_icon(icon)###
 pg.display.set_caption("Draft - PyG Battle program")
 Window = pg.display.set_mode(WinSize)
 
-Window.blit(Char1Still, (0, 175))#pg.draw.rect(Window, p2.colour, p2.rect)
-Window.blit(Char1Still, (0, 175))#pg.draw.rect(Window, p2.colour, p2.rect)
-
+Window.blit(char1Still, (0, 175))#pg.draw.rect(Window, p2.colour, p2.rect)
+Window.blit(char1Still, (0, 175))#pg.draw.rect(Window, p2.colour, p2.rect)
+font1 = FontGEN(defaultFont, 45, "This finally worked", False, (0, 0, 0), (155, 000, 000))#"Other assets\Agdasima\Agdasima-Regular.ttf"
+font1.render()
 pg.display.update()
 # The main loop which runs the game
 while True:
@@ -123,6 +157,7 @@ while True:
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_w:
                 p1.moveForward()
+                font1.render()
         elif event.type == pg.KEYUP:
             if event.type == pg.K_p:
                 p1.punch(p2)
@@ -134,4 +169,4 @@ while True:
             """
         # This is done every cycle to keep the game running smoothly
         pg.display.update()
-        pg.time.Clock().tick(60)
+        Clock.tick(60)
