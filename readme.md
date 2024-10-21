@@ -5,12 +5,12 @@
 # Page of references
  - This program is built with the PYGAME library which helps with the development of GUI applications, typically games
  - pixilart.com is a site which provides tools to create pixel art
- - Fonts used are Freesansbold.ttf and gdasima.ttf
+ - Fonts used are Freesansbold.ttf and Agdasima.ttf
 
 # Other words
  - This game uses game states which determine what part of the code can be run and is ran depending on states rather than storing parts of the game loop into functions
  - The display is updated every game loop rather than individually when there is a change as changes could be lost track of and can cause visual defects although this means it could be less efficient
-
+ - All variables use PascalCase except class subroutine names and class variable names which will be in camelCase
 ---
 
 # Flow of game for user
