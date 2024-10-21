@@ -1,5 +1,4 @@
 # --- This is a pygame fighting game ---
-import time
 import pygame as pg
 pg.init()
 from pygame.locals import *
@@ -118,14 +117,14 @@ class ButtonGen:
         Window.blit(self.text, self.rect)
 
     # Checks whether the input is within the button parameters
-    def positionCheck(self, MousePosition):
-        if (self.originX < MousePosition[0] < self.endX) and (self.originY < MousePosition[1] < self.endY):
+    def positionCheck(self, MousePos):
+        if (self.originX < MousePos[0] < self.endX) and (self.originY < MousePos[1] < self.endY):
             return True
 
 
 # --- Main ---
 # Loads the variables and constants
-WinSize = (480, 270)
+WinSize = (16*30, 9*30)
 Clock = pg.time.Clock()
 #Preset colours which will be used in the menus
 BackgroundColour = (66, 129, 164)
@@ -133,11 +132,18 @@ AccentColour = (72, 169, 166)
 SubBackgroundColour = (228, 223, 218)
 SubAccentColour = (212, 180, 131)
 #Game states used to determine what part of teh code can be executed
-StateInMenu = False
+StateInMenu = True
 StateInOptions = False
 StateInCharacterSelection = False
 StateInMapSelection = False
 StateInGame = False
+#Coordinates, the variables are named by their xy position, custom positions have to be tweaked individually
+CentreTop = [(WinSize[0] // 2), int(WinSize[1] * 0.1)]
+CentreBottom = [(WinSize[0] // 2), int((WinSize[1] * 0.9))]
+CentreCentre = [(WinSize[0] // 2), (WinSize[1] // 2)]
+LeftTop = [int((WinSize[0] * 0.1)), int((WinSize[1] * 0.1))]
+RightTop = [int((WinSize[0] * 0.9)), int((WinSize[1] * 0.1))]
+RightBottom = [int((WinSize[0] * 0.9)), int((WinSize[1] * 0.9))]
 
 # Load assets - Loads assets such as images and fonts
 DefaultFont = "Other assets\Agdasima\Agdasima-Regular.ttf"
@@ -160,12 +166,14 @@ Window = pg.display.set_mode(WinSize)
 
 #Loads all the text and buttons to be used in the game
 #(font, size, text, antialias, textColour, backgroundColour, centrePosX, centrePosY)
-LoadingText = TextGen(DefaultFont, 35, "Loading The Game...Please Wait", True, SubAccentColour, SubBackgroundColour, WinSize[0] // 2, WinSize[1] // 2)
-WelcomeText = TextGen(DefaultFont, 30, "FightingGame Booted", True, SubAccentColour, SubBackgroundColour, WinSize[0] // 2, WinSize[1] // 2)
+LoadingText = TextGen(AlternativeFont, 28, "Loading The Game...Please Wait", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) #Pos at Centre
+WelcomeText = TextGen(AlternativeFont, 28, "FightingGame Booted", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) # Pos at Centre
+StartGameButton = ButtonGen(DefaultFont, 27, "Start Game", True, SubAccentColour, SubBackgroundColour, (WinSize[0] // 2), ((WinSize[1] - 50) // 2)) # Pos at bottom of top half
+SettingButton = ButtonGen(DefaultFont, 27, "Settings", True, SubAccentColour, SubBackgroundColour, (WinSize[0] // 2), ((WinSize[1] + 50) // 2)) # Pos at top of bottom half
+OptionMenuText = ButtonGen(DefaultFont, 27, "Options Menu", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # Pos at top
+OptionMenuText1 = ButtonGen(DefaultFont, 27, "Nothing to see here at the moment", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) # Pos Centre
+ReturnButton = ButtonGen(DefaultFont, 27, "Return", True, SubAccentColour, SubBackgroundColour, RightBottom[0], RightBottom[1]) # Bottom Right
 """
-StartGameButton = ButtonGen()
-SettingButton = ButtonGen()
-ReturnButton = ButtonGen()
 CharSelectText = TextGen()
 Player1Text = TextGen()
 Player2Text = TextGen()
@@ -181,23 +189,75 @@ Background4Button = ButtonGen()
 
 #A loading screen which waists the players' time since this is not needed and also yes, I spelt it waist not waste
 Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
 LoadingText.render()
 pg.display.update()
-time.sleep(5)
+pg.time.wait(3200)
 #The welcome screen which notifies the user the pointless loading screen has been completed
 Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
 WelcomeText.render()
 pg.display.update()
-time.sleep(3)
+pg.time.wait(1600)
 
 pg.display.update()
 # The main loop which runs the game
 while True:
     for event in pg.event.get():
+        # Quit the game
         if (event.type == pg.QUIT) or ((event.type == pg.KEYDOWN) and (event.key == K_ESCAPE)):
             pg.quit()
             print("Exited pygame")
             quit()
-        # This is done every cycle to keep the game running smoothly
+        # Main menu which brings the user to the next menus when the user clicks onto a button
+        elif StateInMenu:
+            # Renders main menu
+            Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+            pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            StartGameButton.render()
+            SettingButton.render()
+            pg.display.update()
+            # Checks for mouse input and position and whether to load the appropriate menu
+            if event.type == MOUSEBUTTONUP:
+                MousePosition = pg.mouse.get_pos()
+                if StartGameButton.positionCheck(MousePosition):
+                    StateInMenu = False
+                    StateInCharacterSelection = True
+                elif SettingButton.positionCheck(MousePosition):
+                    StateInMenu = False
+                    StateInOptions = True
+        # Options menu, currently nothing here because providing settings will break this game
+        elif StateInOptions:
+            # Renders the options menu
+            Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+            pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            OptionMenuText.render()
+            OptionMenuText1.render()
+            ReturnButton.render()
+            pg.display.update()
+            # Checks for mouse input and position and whether to load the appropriate menu
+            if event.type == MOUSEBUTTONUP:
+                MousePosition = pg.mouse.get_pos()
+                if ReturnButton.positionCheck(MousePosition):
+                    StateInOptions = False
+                    StateInMenu = True
+        elif StateInCharacterSelection:
+            Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+            pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            # HOW AM I GONNA DO THIS?????
+            pg.display.update()
+        elif StateInMapSelection:
+            Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+            pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            # HOW AM I GONNA DO THIS?????
+            pg.display.update()
+        elif StateInGame:
+            Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
+            pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            # HOW AM I GONNA DO THIS?????
+            pg.display.update()
+    # This is done every cycle to keep the game running smoothly
     pg.display.update()
     Clock.tick(60)
+
+# I'm sorry for whoever has to read this, I hope you enjoy understanding how this works
