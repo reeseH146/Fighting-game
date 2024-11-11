@@ -35,17 +35,6 @@
  - Render - Adds the font to the screen
  - Change position - Values are provided to change the position of the font
 
-``` To be finished
-## Button Gen 
- - A class which takes attributes of a button, it combines it to create a button which can be interacted with
- - Render - Adds the button to the screen
- - Change position - Values are provided to change the position of the font
- - Click detection - Checks for clicking by the user and returns True to show it has been clicked
- 
- ## Sprite Class
- 
- ```
-
 --- 
 
 # Sprites to draw : 
@@ -56,19 +45,23 @@
 
 # To do list : 
  - Get game states working
-    - Each game state carries out scenes correctly : display scene and objects, moves on when appropriate 
+    - [ ] Each game state carries out scenes correctly : display scene and objects, moves on when appropriate 
  - Finish character classes
-    - Get all movement physics working
-    - Character changes sprite under certain actions and can change back automatically
-    - Get character collision working
+    - [ ] Get all movement physics working
+    - [ ] Character changes sprite under certain actions and can change back automatically
+    - [ ] Get character hit boxes working
  - Additional features : 
-    - Sound (Dynamic sounds)
-    - Settings (Keybinds, display size, game values)
-    - Tutorial (custom gamemodes which teaches user or allows user to train)
-    - More sprite actions
-    - More assets
-    - Saving data (recording match details)
-    - Gamemodes (tournament, custom map creation, etc)
-    - Additional objects
-    - Custom maps - Has custom game mechanics with different objects which allows more interaction
-    - Easter eggs (Stuff included in images/animations/comments/console prints)
+    - [ ] Sound
+       - [ ] Event activated sounds
+       - [ ] Dynamic sounds based on environment
+    - [ ] Settings (Keybinds, display size, game values)
+    - [ ] Tutorial (custom gamemodes which teaches user or allows user to train)
+    - [ ] More sprite actions
+       - [ ] Attacks - Slide, types of kicks and punches, etc
+       - [ ] Movements - Sprite exclusive movements (higher jumps, faster movement)
+    - [ ] More assets - Maps, characters and animations, skins, etc
+    - [ ] Saving data (recording match details, done by using JSON files)
+    - [ ] Gamemodes (tournament, custom map creation, etc)
+    - [ ] Additional objects
+    - [ ] Custom maps - Has custom game mechanics with different objects which allows more interaction
+    - [ ] Easter eggs (Stuff included in images/animations/comments/console prints)
