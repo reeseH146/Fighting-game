@@ -44,9 +44,9 @@ title : Flow of program files
 graph TD;
     MenuScript["Menu and selection screens"] <-- UIScripts["Button
     Fonts"]
-    GameScript["Main game"] <-- UIScripts
-    MenuScript --> GameScript
-    GameScript <-- SpriteScript["Creates sprites with attributes and methods"]
+    GameScript["Main game"] <-- UIScripts["Button Fonts"]
+    MenuScript["Menu and selection screens"] --> GameScript["Main game"]
+    GameScript["Main game"] <-- SpriteScript["Creates sprites with attributes and methods"]
     
 ```
 
