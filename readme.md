@@ -38,11 +38,16 @@
 --- 
 # Order of files
 ```mermaid
+---
+title : Flow of program files
+---
 graph TD;
-    A-->B;
-    A-->C;
-    B-->D;
-    C-->D;
+    MenuScript["Menu and selection screens"] <-- UIScripts["Button
+    Fonts"]
+    GameScript["Main game"] <-- UIScripts
+    MenuScript --> GameScript
+    GameScript <-- SpriteScript["Creates sprites with attributes and methods"]
+    
 ```
 
 ---
