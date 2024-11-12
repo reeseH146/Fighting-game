@@ -5,88 +5,63 @@ from pygame.locals import *
 if not pg.get_init():
     print("There was something wrong with the program *>*")
     quit()
+import random as r
 # import math
-# import random as r
 
 
 # --- Sprite Class ---
 # Creates and assigns attributes to the sprite
+# There are some functions in this class which allows the user to interact with the sprite
 class sprite:
     def __init__(self, name, startLoc, spriteIMG):
         self.char = spriteIMG
+        self.loc = [startLoc[0], startLoc[1]]
         self.rect = self.char.get_rect()
-        self.rect.center = (startLoc[0], startLoc[1])
+        self.rect.center = (self.loc[0], self.loc[1])
         self.name = name
         self.health = 100
         self.healTimes = 3
         self.mana = 100
+        self.attackRange = self.char.get_rect().inflate_ip(40, 20)
+        self.attackRange.center = (startLoc[0], startLoc[1])
+        self.atkCool = 500
 
     def render(self):
         Window.blit(self.char, self.rect)
-"""
+
     # Moves character forward by redrawing the whole scene then calculating change in position
     def moveForward(self):
-        # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
-        self.rect[0] += 7
-        Window.blit(char1Still, self.rect)
+        # Redraws the scene
+        Window.blit(ChosenMap, (1, 1))
+        # Modifies the character position
+        self.loc[0] += 5
+        self.rect.center = (self.loc[0], self.loc[1])
+        self.attackRange.center = (self.loc[0], self.loc[1])
+        Window.blit(self.char, self.rect)
 
     # Moves character backwards by redrawing the whole scene then calculating change in position
     def moveBackward(self):
-        # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
-        self.rect[0] -= 7
-        Window.blit(char1Still, [0, 0])
+        # Redraws the scene
+        Window.blit(ChosenMap, (1, 1))
+        # Modifies the character position
+        self.loc[0] -= 5
+        self.rect.center = (self.loc[0], self.loc[1])
+        self.attackRange.center = (self.loc[0], self.loc[1])
+        Window.blit(self.char, self.rect)
 
-        # Character jumps by redrawing the whole scene then calculating change in position
-    def moveJump(self):
-        # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
-        self.rect[1] += 10
-        Window.blit(char1Still, [0, 0])
 
-        # Character crouches forward by redrawing the whole scene then calculating change in position
-    def moveCrouch(self):
-        # Redraws the scene with character position modified
-        pg.draw.rect(Window, [000, 000, 000], Window.fill((000, 000, 000)))
-        self.rect[0] -= (1) ###Change this value based on the character size
-        Window.blit(char1Still, [self.rect[0], ])
+    def attackPunch(self, opponent):
+        # Draws the character punching
 
-    # Punch is weaker than kick but faster
-    @staticmethod
-    def punch(opponent):
-        opponent.health -= r.randint(5, 15)
-        print(opponent.name, opponent.health)
-    #####
+        # Character punches the opponent
+        if self.attackRange.colliderect(opponent.rect):
+            opponent.health -= r.randint(7, 10)
 
-    # Kick is generally more powerful than punch but slower
-    @staticmethod
-    def kick(opponent):
-        opponent.health -= r.randint(10, 20)
-        print(opponent.name, opponent.health)
-
-    # Player cannot move while healing
-    def heal(self):
-        if (self.health <= 10) & (self.healTimes > 0):
-            pg.event.set_blocked([pg.KEYDOWN, pg.MOUSEBUTTONUP])
-            self.healTimes -= 1
-            self.health += 10
-            pg.event.set_allowed([pg.KEYDOWN, pg.MOUSEBUTTONUP])
-            print(self.name, self.health)
-
-    def ranGen(self, mini, maxi):
-        randomNumber = r.randint(int(r.random() * mini), int(r.random() * maxi))
-        return randomNumber
-"""
-
-# --- Font generator ---
-"""
-Font class takes various arguments to create an instance of text with its attributes
-This makes it easier to place fonts during runtime as only the location will change
- - Font and size creates the type of font that will be used with the text
- - Text, Antialias, Text Colour and Background Colour are attributes of the text and its the text box
-"""
 # --- Text generator ---
+"""
+Font class takes various arguments to create and instance of text and rectangle with their attributes
+This simplifies the use of fonts throughout the game after creation
+"""
 class TextGen:
     def __init__(self, font, size, text, antialias, textColour, backgroundColour, centrePosX, centrePosY):
         self.font = pg.font.Font(font, size)
@@ -128,6 +103,7 @@ class ButtonGenText:
         self.text = newText
 
 # --- Button image generator
+# Works similarly but text attributes are replaced with an image
 class ButtonGenImg:
     def __init__(self, image, centrePosX, centrePosY):
         self.image = image
@@ -146,7 +122,6 @@ class ButtonGenImg:
     def positionCheck(self, MousePos):
         if (self.originX < MousePos[0] < self.endX) and (self.originY < MousePos[1] < self.endY):
             return True
-
 
 # --- Main ---
 # Loads the variables and constants
@@ -168,26 +143,25 @@ StateInCharacterSelection = False
 StateInMapSelection = False
 StateInGame = False
 #Coordinates, the variables are named by their xy position, custom positions have to be tweaked individually
-CentreTop = [(WinSize[0] // 2), int(WinSize[1] * 0.1)]
-CentreBottom = [(WinSize[0] // 2), int((WinSize[1] * 0.9))]
-CentreCentre = [(WinSize[0] // 2), (WinSize[1] // 2)]
-LeftTop = [int((WinSize[0] * 0.1)), int((WinSize[1] * 0.1))]
-RightTop = [int((WinSize[0] * 0.9)), int((WinSize[1] * 0.1))]
-RightBottom = [int((WinSize[0] * 0.9)), int((WinSize[1] * 0.9))]
+CentreX = WinSize[0] // 2
+CentreY = WinSize[1] // 2
+LeftX = int(WinSize[0] * 0.1)
+RightX = int(WinSize[0] * 0.9)
+TopY = int(WinSize[1] * 0.1)
+BottomY = int(WinSize[1] * 0.9)
 
 # Load assets - Loads assets such as images and fonts
 DefaultFont = "Other assets\Agdasima\Agdasima-Regular.ttf"
 AlternativeFont = "freesansbold.ttf"
-TempBG = "Other assets\Archive\SizeTest3.png"              ### Remove this
-TempChar = "Other assets\Archive\TempChar.png"             ### Remove this
 Icon = pg.image.load("Game assets\Icon.png")
 Char1Still = pg.image.load("Game assets\Char1Still.png")
-#Char2Still = pg.image.load("Game assets\")                ### Create image
-#Char3Still = pg.image.load("Game assets\")
+Char2Still = pg.image.load("Game assets\Char2Still.png")
+Char3Still = pg.image.load("Game assets\Char3Still.png")
+Char4Still = pg.image.load("Game assets\Char4Still.png")
 Background1 = pg.image.load("Game assets\BG1_Ring.png")
 Background2 = pg.image.load("Game assets\BG2_Beach.png")
 Background3 = pg.image.load("Game assets\BG3_Woodlands.png")
-#Background4 = pg.image.load("Game assets\BG4_Hell.png)    ### Create image # This code is literally hell
+Background4 = pg.image.load("Game assets\BG4_Hell.png")    # This code is literally hell
 
 # Loads the screen and visual assets onto the screen
 pg.display.set_icon(Icon)
@@ -196,29 +170,27 @@ Window = pg.display.set_mode(WinSize)
 
 #Loads all the text and buttons to be used in the game
 #(font, size, text, antialias, textColour, backgroundColour, centrePosX, centrePosY)
-LoadingText = TextGen(AlternativeFont, 28, "Loading The Game...Please Wait", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) #Pos at Centre
-WelcomeText = TextGen(AlternativeFont, 28, "FightingGame Booted", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) # Pos at Centre
-StartGameButton = ButtonGenText(DefaultFont, 27, "Start Game", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], ((WinSize[1] - 75) // 2)) # Pos at centre, first button
-SettingButton = ButtonGenText(DefaultFont, 27, "Settings", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) # Pos at centre, second button
-ExitButton = ButtonGenText(DefaultFont, 27, "Close game", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], ((WinSize[1] + 75) // 2)) # Pos at centre, third button
-OptionMenuText = ButtonGenText(DefaultFont, 27, "Options Menu", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # Pos at top
-OptionMenuText1 = ButtonGenText(DefaultFont, 27, "Nothing to see here at the moment", True, SubAccentColour, SubBackgroundColour, CentreCentre[0], CentreCentre[1]) # Pos Centre
-ReturnButton = ButtonGenText(DefaultFont, 27, "Return", True, SubAccentColour, SubBackgroundColour, RightBottom[0], RightBottom[1]) # Bottom Right
-
-CharSelectText = TextGen(DefaultFont, 27, "Select a character", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # At top centre
-Player1Text = TextGen(DefaultFont, 27, "Player 1", True, SubAccentColour, SubBackgroundColour, RightTop[0], RightTop[1]) # At Top Right
-Player2Text = TextGen(DefaultFont, 27, "Player2", True, SubAccentColour, SubBackgroundColour, LeftTop[0], LeftTop[1]) # At Top Left
-
-Char1Button = ButtonGenImg(Char1Still, int((WinSize[0] * (1/6))), int((WinSize[1] * 0.5))) # Centre of top left quadrant # 0.5 * (1/3)
-#Char2Button = ButtonGenImg(Char2Still, int((WinSize[0] * (1/3))), int((WinSize[1] * 0.25))) # Centre of top right quadrant
-#Char3Button = ButtonGenImg(Char3Still, int((WinSize[0] * (2/3))), int((WinSize[1] * 0.75))) # Centre of bottom left quadrant
-#Char4Button = ButtonGenImg(Char4Still, int((WinSize[0] * (5/6))), int((WinSize[1] * 0.75))) # Centre of bottom right quadrant
-MapSelectText = TextGen(DefaultFont, 27, "Select a map", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # At top centre
-Background1Button = ButtonGenImg(pg.transform.scale(Background1, (144, 81)), int((WinSize[0] * 0.30)), int((WinSize[1] * 0.30))) # Centre of top left quadrant
-Background2Button = ButtonGenImg(pg.transform.scale(Background2, (16*9, 9*9)), int((WinSize[0] * 0.70)), int((WinSize[1] * 0.30))) # Centre of top right quadrant
-Background3Button = ButtonGenImg(pg.transform.scale(Background3, (16*9, 9*9)), int((WinSize[0] * 0.30)), int((WinSize[1] * 0.70))) # Centre of bottom left quadrant
-#Background4Button = ButtonGenImg(pg.transform.scale(Background4, (16*9, 9*9)), int((WinSize[0] * 0.70)), int((WinSize[1] * 0.70))) # Centre of bottom right quadrant
-CountDown = ButtonGenText(DefaultFont, 30, "Begin in : 3", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # Pos at top centre
+LoadingText = TextGen(AlternativeFont, 28, "Loading The Game...Please Wait", True, SubAccentColour, SubBackgroundColour, CentreX, CentreY) #Pos at Centre
+WelcomeText = TextGen(AlternativeFont, 28, "FightingGame Booted", True, SubAccentColour, SubBackgroundColour, CentreX, CentreY) # Pos at Centre
+StartGameButton = ButtonGenText(DefaultFont, 27, "Start Game", True, SubAccentColour, SubBackgroundColour,  CentreX, ((WinSize[1] - 75) // 2)) # Pos at centre, first button
+SettingButton = ButtonGenText(DefaultFont, 27, "Settings", True, SubAccentColour, SubBackgroundColour,  CentreX, CentreY) # Pos at centre, second button
+ExitButton = ButtonGenText(DefaultFont, 27, "Close game", True, SubAccentColour, SubBackgroundColour, CentreX, ((WinSize[1] + 75) // 2)) # Pos at centre, third button
+OptionMenuText = ButtonGenText(DefaultFont, 27, "Options Menu", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # Pos at top
+OptionMenuText1 = ButtonGenText(DefaultFont, 27, "Nothing to see here at the moment", True, SubAccentColour, SubBackgroundColour, CentreX, CentreY) # Pos Centre
+ReturnButton = ButtonGenText(DefaultFont, 27, "Return", True, SubAccentColour, SubBackgroundColour, RightX, BottomY) # Bottom Right
+CharSelectText = TextGen(DefaultFont, 27, "Select a character", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # At top centre
+Player1Text = TextGen(DefaultFont, 27, "Player 1", True, SubAccentColour, SubBackgroundColour, LeftX, TopY) # At Top Left
+Player2Text = TextGen(DefaultFont, 27, "Player2", True, SubAccentColour, SubBackgroundColour, RightX, TopY) # At Top Right
+Char1Button = ButtonGenImg(Char1Still, int((WinSize[0] * (1/5))), int((WinSize[1] // 2)))
+Char2Button = ButtonGenImg(Char2Still, int((WinSize[0] * (2/5))), int((WinSize[1] // 2)))
+Char3Button = ButtonGenImg(Char3Still, int((WinSize[0] * (3/5))), int((WinSize[1] // 2)))
+Char4Button = ButtonGenImg(Char4Still, int((WinSize[0] * (4/5))), int((WinSize[1] // 2)))
+MapSelectText = TextGen(DefaultFont, 27, "Select a map", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # At top centre
+Background1Button = ButtonGenImg(pg.transform.scale(Background1, (144, 81)), int((WinSize[0] * (1/3))), int((WinSize[1] * (1/3)))) # Centre of top left quadrant
+Background2Button = ButtonGenImg(pg.transform.scale(Background2, (16*9, 9*9)), int((WinSize[0] * (2/3))), int((WinSize[1] * (1/3)))) # Centre of top right quadrant
+Background3Button = ButtonGenImg(pg.transform.scale(Background3, (16*9, 9*9)), int((WinSize[0] * (1/3))), int((WinSize[1] * (2/3)))) # Centre of bottom left quadrant
+Background4Button = ButtonGenImg(pg.transform.scale(Background4, (16*9, 9*9)), int((WinSize[0] * (2/3))), int((WinSize[1] * (2/3)))) # Centre of bottom right quadrant
+CountDown = ButtonGenText(DefaultFont, 30, "Begin in : 3", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # Pos at top centre
 
 #A loading screen which waists the players' time since this is not needed and also yes, I spelt it waist not waste
 Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
@@ -234,6 +206,7 @@ pg.display.update()
 pg.time.wait(1600)
 
 pg.display.update()
+pg.key.set_repeat(50, 50)
 # The main loop which runs the game
 while Running:
     for event in pg.event.get():
@@ -289,11 +262,9 @@ while Running:
             Player1Text.render()
             Player2Text.render()
             Char1Button.render()
-            """
             Char2Button.render()
             Char3Button.render()
             Char4Button.render()
-            """
             ReturnButton.render()
             # ---- Blit the rest of the buttons
             # Checks for input, moves on to next scene if detected both players clicked on a character
@@ -307,44 +278,64 @@ while Running:
                     ChosenChar1 = ""
                     ChosenChar2 = ""
                 # Checks where the input was and then who pressed
-                if Char1Button.positionCheck(MousePosition):
-                    if ButtonClicked[0]:
-                        ChosenChar1 = sprite("Player 1", [50, WinSize[1] - 56], Char1Still)
-                    elif ButtonClicked[2]:
-                        ChosenChar2 = sprite("Player 2", [WinSize[0] - 70, WinSize[1] - 56], Char1Still)
-                """
-                Put in the rest of them
-                """
+                if ButtonClicked[0]:
+                    if Char1Button.positionCheck(MousePosition):
+                        ChosenChar1 = sprite("Player 1", [75, WinSize[1] - 56], Char1Still)
+                    elif Char2Button.positionCheck(MousePosition):
+                        ChosenChar1 = sprite("Player 1", [75, WinSize[1] - 56], Char2Still)
+                    elif Char3Button.positionCheck(MousePosition):
+                        ChosenChar1 = sprite("Player 1", [75, WinSize[1] - 56], Char3Still)
+                    elif Char4Button.positionCheck(MousePosition):
+                        ChosenChar1 = sprite("Player 1", [75, WinSize[1] - 56], Char4Still)
+                elif ButtonClicked[2]:
+                    if Char1Button.positionCheck(MousePosition):
+                        ChosenChar2 = sprite("Player 1", [WinSize[0] - 75, WinSize[1] - 56], Char1Still)
+                    elif Char2Button.positionCheck(MousePosition):
+                        ChosenChar2 = sprite("Player 1", [WinSize[0] - 75, WinSize[1] - 56], Char2Still)
+                    elif Char3Button.positionCheck(MousePosition):
+                        ChosenChar2 = sprite("Player 1", [WinSize[0] - 75, WinSize[1] - 56], Char3Still)
+                    elif Char4Button.positionCheck(MousePosition):
+                        ChosenChar2 = sprite("Player 1", [WinSize[0] - 75, WinSize[1] - 56], Char4Still)
             # Checks both players have selected a character before proceeding
             elif (ChosenChar1 != "") and (ChosenChar2 != ""):
                 StateInCharacterSelection = False
                 StateInMapSelection = True
-
-
         # Map selection menu, 1 player can choose what map to play
         elif StateInMapSelection:
             # Renders the map selection menu
             Window.fill(BackgroundColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
             pg.draw.rect(Window, AccentColour, (0, 0, WinSize[0], WinSize[1]), 5)
+            MapSelectText.render()
             Background1Button.render()
             Background2Button.render()
             Background3Button.render()
-            #Background4Button.render()
+            Background4Button.render()
             ReturnButton.render()
             pg.display.update()
             # Checks for input and position to choose a map
             if event.type == MOUSEBUTTONUP:
                 ButtonClicked = pg.mouse.get_pressed()
                 MousePosition = pg.mouse.get_pos()
+                # Resets the character chosen before returning
                 if ReturnButton.positionCheck(MousePosition):
                     StateInMapSelection = False
                     StateInCharacterSelection = True
                     ChosenChar1 = ""
                     ChosenChar2 = ""
+                # Checks mouse activity is in here and assigns the background to it
                 elif Background1Button.positionCheck(MousePosition):
                     ChosenMap = Background1
-                    StateInMapSelection = False
-                    StateInGame = True
+                # Checks mouse activity is in here and assigns the background to it
+                elif Background2Button.positionCheck(MousePosition):
+                    ChosenMap = Background2
+                # Checks mouse activity is in here and assigns the background to it
+                elif Background3Button.positionCheck(MousePosition):
+                    ChosenMap = Background3
+                # Checks mouse activity is in here and assigns the background to it
+                elif Background4Button.positionCheck(MousePosition):
+                    ChosenMap = Background4
+                # If the map has been chosen then it loads the stage before moving on to the actual game
+                if ChosenMap != "":
                     Window.blit(ChosenMap, (1, 1))
                     ChosenChar1.render()
                     ChosenChar2.render()
@@ -352,36 +343,52 @@ while Running:
                     pg.display.update()
                     pg.time.wait(999)
                     for x in range(2, 0, -1):
-                        CountDown = TextGen(DefaultFont, 30, f"Begin in : {x}", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # Pos at top centre
+                        CountDown = TextGen(DefaultFont, 30, f"Begin in : {x}", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # Pos at top centre
                         CountDown.render()
                         pg.display.update()
                         pg.time.wait(999)
-                    CountDown = TextGen(DefaultFont, 30, "!!! Begin Battle !!!", True, SubAccentColour, SubBackgroundColour, CentreTop[0], CentreTop[1]) # Pos at top centre
+                    CountDown = TextGen(DefaultFont, 30, "!!! Begin Battle !!!", True, SubAccentColour, SubBackgroundColour, CentreX, TopY) # Pos at top centre
                     CountDown.render()
                     pg.display.update()
-                    pg.time.wait(500)
-                elif Background2Button.positionCheck(MousePosition):
-                    ChosenMap = Background2
+                    pg.time.wait(250)
                     StateInMapSelection = False
                     StateInGame = True
-                elif Background3Button.positionCheck(MousePosition):
-                    ChosenMap = Background3
-                    StateInMapSelection = False
-                    StateInGame = True
-                    """
-                    elif Background4Button.positionCheck(MousePosition):
-                        ChosenMap = Background4
-                        StateInMapSelection = False
-                        StateInGame = True
-                    """
+                    # Renders the map and characters
+                    Window.blit(ChosenMap, (1, 1))
+                    ChosenChar1.render()
+                    ChosenChar2.render()
         # In game, renders map and players, it countdowns before the players can interact each other until 1 "dies"
         elif StateInGame:
-            Window.blit(ChosenMap, (1, 1))
-            ChosenChar1.render()
-            ChosenChar2.render()
+            # Condition for the game to stop
+            if (ChosenChar1.health < 1) or (ChosenChar2.health < 1):
+                StateInGame = False
+                Running = False
+            # Checks through the list of keys pressed for movement updates
+            PressedKeys = pg.key.get_pressed()
+            # Checks for input and performs the respective actions
+            if PressedKeys[K_RIGHT]:
+                ChosenChar2.moveForward()
+                ChosenChar1.render()
+            elif PressedKeys[K_LEFT]:
+                ChosenChar2.moveBackward()
+                ChosenChar1.render()
+            if PressedKeys[K_a]:
+                ChosenChar1.moveBackward()
+                ChosenChar2.render()
+            elif PressedKeys[K_d]:
+                ChosenChar1.moveForward()
+                ChosenChar2.render()
+
+            # Attack movements
+            elif PressedKeys[K_e]:
+                ChosenChar1.attackPunch(ChosenChar2)
+                print(ChosenChar2.health)
+
+            # Player 2 movement and actions, for some reason it won't move continuously unlike player 1
+
     # This is done every cycle to keep the game running smoothly
     pg.display.update()
     Clock.tick(60)
 
 # I'm sorry for whoever has to read this, I hope you enjoy understanding how this works
-# I made some good progress yesterday, made the base of the game so then I can actually implement the mechanics the fans
+# I made some good progress yesterday, made the base of the game so then I can actually implement the mechanics - message to Zeke since it was register in the study room
