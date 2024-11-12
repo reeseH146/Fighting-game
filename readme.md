@@ -36,6 +36,16 @@
  - Change position - Values are provided to change the position of the font
 
 --- 
+# Order of files
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+---
 
 # Sprites to draw : 
  - Scenes : Plain match background, Beach, Forest, Hell
