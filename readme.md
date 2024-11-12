@@ -42,15 +42,63 @@
 title : Flow of program files
 ---
 graph TD;
-    MenuScript["Menu and selection screens"] <-- UIScripts["Button
-    Fonts"]
-    GameScript["Main game"] <-- UIScripts["Button Fonts"]
-    MenuScript["Menu and selection screens"] --> GameScript["Main game"]
-    GameScript["Main game"] <-- SpriteScript["Creates sprites with attributes and methods"]
-    
-```
+    %% Each main element of the program
+    MenuScript("Menu and selection screens")
+    UIScript[["Creates Button and Fonts"]]
+    GameScript["Main game"]
+    SpriteScript[["Creates sprites with attributes and methods"]]
 
+    %% Groups different parts of the program together
+    subgraph "Main Program"
+        MenuScript
+        GameScript
+        end
+    subgraph "UIScript : "
+        UIScript
+        end
+    subgraph "SpriteScript :"
+        SpriteScript
+        end
+    
+    %% I cannot figure out how to reorganise this diagram to be more accurate but this shall suffice
+    MenuScript --> GameScript
+    UIScript --> MenuScript & GameScript
+    SpriteScript --> GameScript
+```
+```mermaid
 ---
+title : Menu screens
+---
+graph LR;
+    MenuScript("Menu scenes")
+    GameScript("Quits and calls Game Script")
+    %% Section of main menu
+    Play[Enters next stage of game]
+    Settings["Settings page"]
+    Exit["Exit : Quits the program"]
+    %% Character selection
+    CharSelection[["Both players have to chose a character before continuing"]]
+    Char1; Char2; Char3; Char4
+    %% Map selection
+    MapSelection[["A player selects the map to play in"]]
+    Map1; Map2; Map3; Map4
+
+    %% Groups similar components for organisation
+    subgraph "Main menu"
+        Play
+        Settings
+        Exit
+        end
+    subgraph "Char select"
+        Char1 & Char2 & Char3 & Char4
+        end
+    subgraph "Map select"
+        Map1 & Map2 & Map3 & Map4
+        end
+
+    MenuScript --> Play & Settings & Exit
+    Play --> CharSelection --> Char1 & Char2 & Char3 & Char4 --> MapSelection --> Map1 & Map2 & Map3 & Map4 --> GameScript
+```
 
 # Sprites to draw : 
  - Scenes : Plain match background, Beach, Forest, Hell
