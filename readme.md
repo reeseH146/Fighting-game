@@ -43,8 +43,8 @@ title : Flow of program files
 ---
 graph TD;
     %% Each main element of the program
-    MenuScript("Menu and selection screens")
-    UIScript[["Creates Button and Fonts"]]
+    MenuScript[["Menu and selection screens"]]
+    UIScript("Creates Button and Fonts")
     GameScript["Main game"]
     SpriteScript[["Creates sprites with attributes and methods"]]
 
