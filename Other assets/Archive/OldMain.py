@@ -6,8 +6,6 @@ if not pg.get_init():
     print("There was something wrong with the program *>*")
     quit()
 import random as r
-# import math
-
 
 # --- Sprite Class ---
 # Creates and assigns attributes to the sprite
@@ -153,15 +151,15 @@ BottomY = int(WinSize[1] * 0.9)
 # Load assets - Loads assets such as images and fonts
 DefaultFont = "Other assets\Agdasima\Agdasima-Regular.ttf"
 AlternativeFont = "freesansbold.ttf"
-Icon = pg.image.load("Game assets\Icon.png")
-Char1Still = pg.image.load("Game assets\Char1Still.png")
-Char2Still = pg.image.load("Game assets\Char2Still.png")
-Char3Still = pg.image.load("Game assets\Char3Still.png")
-Char4Still = pg.image.load("Game assets\Char4Still.png")
-Background1 = pg.image.load("Game assets\BG1_Ring.png")
-Background2 = pg.image.load("Game assets\BG2_Beach.png")
-Background3 = pg.image.load("Game assets\BG3_Woodlands.png")
-Background4 = pg.image.load("Game assets\BG4_Hell.png")    # This code is literally hell
+Icon = pg.image.load("../../Game assets/Icon.png")
+Char1Still = pg.image.load("../../Game assets/Char1Still.png")
+Char2Still = pg.image.load("../../Game assets/Char2Still.png")
+Char3Still = pg.image.load("../../Game assets/Char3Still.png")
+Char4Still = pg.image.load("../../Game assets/Char4Still.png")
+Background1 = pg.image.load("../../Game assets/BG1_Ring.png")
+Background2 = pg.image.load("../../Game assets/BG2_Beach.png")
+Background3 = pg.image.load("../../Game assets/BG3_Woodlands.png")
+Background4 = pg.image.load("../../Game assets/BG4_Hell.png")    # This code is literally hell
 
 # Loads the screen and visual assets onto the screen
 pg.display.set_icon(Icon)
@@ -389,6 +387,12 @@ while Running:
     # This is done every cycle to keep the game running smoothly
     pg.display.update()
     Clock.tick(60)
+
+# TODO : Refactor code to diagram shown in readme
+# TODO : Implement attack cooldown and all base movement
+# TODO : Implement better user feedback for buttons and text
+# TODO : Implement more actions for characters
+# TODO : Implement animations
 
 # I'm sorry for whoever has to read this, I hope you enjoy understanding how this works
 # I made some good progress yesterday, made the base of the game so then I can actually implement the mechanics - message to Zeke since it was register in the study room

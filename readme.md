@@ -61,7 +61,7 @@ graph TD;
         end
     
     %% I cannot figure out how to reorganise this diagram to be more accurate but this shall suffice
-    MenuScript --> GameScript
+    MenuScript --> GameScript --> MenuScript
     UIScript --> MenuScript & GameScript
     SpriteScript --> GameScript
 ```
