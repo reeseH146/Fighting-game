@@ -43,15 +43,13 @@ title : Flow of program files
 ---
 graph TD;
     %% Each main element of the program
-    MenuScript["Menu and selection screens"]
+    MainScript("All scenes and game is in here")
     UIScript[["Creates Button and Fonts"]]
-    GameScript("Main game")
     SpriteScript[["Creates sprites with attributes and methods"]]
 
     %% Groups different parts of the program together
     subgraph "Main Program"
-        MenuScript
-        GameScript
+        MainScript
         end
     subgraph "UIScript : "
         UIScript
@@ -61,9 +59,7 @@ graph TD;
         end
     
     %% I cannot figure out how to reorganise this diagram to be more accurate but this shall suffice
-    MenuScript --> GameScript --> MenuScript
-    UIScript --> MenuScript & GameScript
-    SpriteScript --> GameScript
+    UIScript & SpriteScript --> MainScript
 ```
 ```mermaid
 ---
@@ -97,7 +93,7 @@ graph LR;
         end
 
     MenuScript --> Play & Settings & Exit
-    Play --> CharSelection --> Char1 & Char2 & Char3 & Char4 --> MapSelection --> Map1 & Map2 & Map3 & Map4 --> GameScript
+    Play --> CharSelection --> Char1 & Char2 & Char3 & Char4 --> MapSelection --> Map1 & Map2 & Map3 & Map4 --> GameEvent
 ```
 
 # Sprites to draw : 
