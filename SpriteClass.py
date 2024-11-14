@@ -38,16 +38,18 @@ Additional items and weapons :
 """
 class defSprite:
     def __init__(self, name, startLoc, spriteIMG):
+        self.name = name
         self.char = spriteIMG
         self.loc = [startLoc[0], startLoc[1]]
         self.rect = self.char.get_rect()
         self.rect.center = (self.loc[0], self.loc[1])
-        self.name = name
         self.health = 100
         self.healTimes = 3
         self.mana = 100
-        self.atkCool = 500
+        self.coolReq = [500, 600] # Punch, Kick
+        self.coolCount = [self.coolReq[0], self.coolReq[1]]
         self.attackRange = self.char.get_rect()
+        self.attackRange.inflate_ip(40, 40)
         self.attackRange.center = (self.loc[0], self.loc[1])
 
     def render(self, Window):
@@ -75,21 +77,26 @@ class defSprite:
 
     # If opponent is within character attack range then reduce its HP
     def attackPunch(self, opponent):
-        # Character punches the opponent if in attack range
-        if self.attackRange.colliderect(opponent.rect):
-            opponent.health -= r.randint(7, 10)
-            print(f"{opponent.name}'s health : {opponent.health}")
+        # Character punches the opponent if in attack range and cooldown over
+        if (self.coolCount[0] + self.coolReq[0]) < pg.time.get_ticks():
+            if self.attackRange.colliderect(opponent.rect):
+                opponent.health -= r.randint(7, 10)
+                self.coolCount[0] = pg.time.get_ticks()
+                print(f"{opponent.name}'s health : {opponent.health}")
 
     # If opponent is within character attack range then reduce its HP
     def attackKick(self, opponent):
         # Character punches the opponent if in attack range
-        if self.attackRange.colliderect(opponent.rect):
-            opponent.health -= r.randint(10, 15)
-            print(f"{opponent.name}'s health : {opponent.health}")
+        if (self.coolCount[0] + self.coolReq[0]) < pg.time.get_ticks():
+            if self.attackRange.colliderect(opponent.rect):
+                opponent.health -= r.randint(10, 15)
+                self.coolCount[0] = pg.time.get_ticks()
+                print(f"{opponent.name}'s health : {opponent.health}")
 
     # Heals the character if it meets some requirements
     def heal(self):
-        if self.healTimes > 0:
-            self.healTimes -= 1
-            self.health += r.randint(5, 15)
-            print(f"{self.name}'s health : {self.health}")
+        if (self.coolCount[0] + self.coolReq[0]) < pg.time.get_ticks():
+            if self.healTimes > 0:
+                self.healTimes -= 1
+                self.health += r.randint(5, 15)
+                print(f"{self.name}'s health : {self.health}")
