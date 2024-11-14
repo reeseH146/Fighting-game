@@ -78,7 +78,7 @@ Window.fill(BGColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
 pg.draw.rect(Window, BGAccent, (0, 0, WinSize[0], WinSize[1]), 5)
 LoadText.render(Window)
 pg.display.update()
-pg.time.wait(3200)
+pg.time.wait(500)
 # The welcome screen which notifies the user the pointless loading screen has been completed
 Window.fill(BGColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
 pg.draw.rect(Window, BGAccent, (0, 0, WinSize[0], WinSize[1]), 5)
@@ -179,9 +179,9 @@ while InMenu:
                         P1Char = Char4Still
                 elif ButtonClicked[2]:
                     if Char1Button.positionCheck(MousePosition):
-                        P1Char = Char1Still
+                        P2Char = Char1Still
                     elif Char2Button.positionCheck(MousePosition):
-                        P1Char = Char2Still
+                        P2Char = Char2Still
                     elif Char3Button.positionCheck(MousePosition):
                         P2Char = Char3Still
                     elif Char4Button.positionCheck(MousePosition):
@@ -256,9 +256,10 @@ CountDown.render(Window)
 pg.display.update()
 pg.time.wait(250)
 # Renders the map and characters
-Window.blit(ChosenMap, (1, 1))
+Window.blit(ChosenMap, (0, 0))
 Player1.render(Window)
 Player2.render(Window)
+print("""-----------\nLoaded game\n-----------""")
 InGame = True
 while InGame:
     for event in pg.event.get():
@@ -280,15 +281,12 @@ while InGame:
             Player1.moveForward(Window, ChosenMap)
             Player2.render(Window)
         # Actions
-        elif PressedKeys[K_e]:
+        if PressedKeys[K_e]:
             Player1.attackPunch(Player2)
-            print(Player2.health)
         elif PressedKeys[K_q]:
             Player1.attackKick(Player2)
-            print(Player2.health)
         elif PressedKeys[K_w]:
             Player1.heal()
-            print(Player1.health)
         # Player 2 movements and actions
         # Movements
         if PressedKeys[K_RIGHT]:
@@ -298,21 +296,20 @@ while InGame:
             Player2.moveBackward(Window, ChosenMap)
             Player1.render(Window)
         # Actions
-        elif PressedKeys[K_LSHIFT]:
-            Player1.attackPunch(Player2)
-            print(Player2.health)
+        if PressedKeys[K_HASH]:
+            Player2.attackPunch(Player1)
         elif PressedKeys[K_SLASH] or PressedKeys[K_QUESTION]:
-            Player1.attackKick(Player2)
-            print(Player2.health)
+            Player2.attackKick(Player1)
         elif PressedKeys[K_UP]:
-            Player1.heal()
-            print(Player1.health)
+            Player2.heal()
     # Updates any changes to the display and ensures the game runs smoothly
     pg.display.update()
-    Clock.tick(60)
+    Clock.tick(45)
 
-# TODO : Implement attack cooldown and all base movement
-# TODO : Implement better user feedback for buttons and text
+# TODO : Change keyboard mapping
+# TODO : Document code better
+# TODO : Implement better user feedback for buttons and text and player data in game
+# TODO : Allow user changed settings
 # TODO : Implement more actions for characters
 # TODO : Implement animations
 
