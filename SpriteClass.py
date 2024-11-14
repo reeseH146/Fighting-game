@@ -46,7 +46,7 @@ class defSprite:
         self.health = 100
         self.healTimes = 3
         self.mana = 100
-        self.coolReq = [500, 600] # Punch, Kick
+        self.coolReq = [500, 600, 2000] # Punch, Kick
         self.coolCount = [self.coolReq[0], self.coolReq[1]]
         self.attackRange = self.char.get_rect()
         self.attackRange.inflate_ip(40, 40)
@@ -95,7 +95,7 @@ class defSprite:
 
     # Heals the character if it meets some requirements
     def heal(self):
-        if (self.coolCount[0] + self.coolReq[0]) < pg.time.get_ticks():
+        if (self.coolCount[2] + self.coolReq[2]) < pg.time.get_ticks():
             if self.healTimes > 0:
                 self.healTimes -= 1
                 self.health += r.randint(5, 15)
