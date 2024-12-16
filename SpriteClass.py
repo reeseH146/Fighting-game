@@ -46,8 +46,8 @@ class defSprite:
         self.health = 100
         self.healTimes = 3
         self.mana = 100
-        self.coolReq = [500, 600, 2000] # Punch, Kick
-        self.coolCount = [self.coolReq[0], self.coolReq[1]]
+        self.coolReq = [500, 600, 2000] # Punch, Kick, Heal
+        self.coolCount = [self.coolReq[0], self.coolReq[1], self.coolReq[2]]
         self.attackRange = self.char.get_rect()
         self.attackRange.inflate_ip(40, 40)
         self.attackRange.center = (self.loc[0], self.loc[1])
@@ -87,7 +87,7 @@ class defSprite:
     # If opponent is within character attack range then reduce its HP
     def attackKick(self, opponent):
         # Character punches the opponent if in attack range
-        if (self.coolCount[0] + self.coolReq[0]) < pg.time.get_ticks():
+        if (self.coolCount[1] + self.coolReq[1]) < pg.time.get_ticks():
             if self.attackRange.colliderect(opponent.rect):
                 opponent.health -= r.randint(10, 15)
                 self.coolCount[0] = pg.time.get_ticks()
