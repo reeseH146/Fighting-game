@@ -106,6 +106,8 @@ while InMenu:
             quit()
         # Main menu which brings the user to the next menus when the user clicks onto a button
         elif StateInMenu:
+            pg.event.set_allowed(MOUSEBUTTONDOWN)
+            pg.event.set_allowed(MOUSEBUTTONUP)
             # Renders main menu
             Window.fill(BGColour, pg.Rect(0, 0, WinSize[0], WinSize[1]))
             pg.draw.rect(Window, BGAccent, (0, 0, WinSize[0], WinSize[1]), 5)
@@ -119,6 +121,7 @@ while InMenu:
                 if StartButton.positionCheck(MousePosition):
                     StateInMenu = False
                     StateInCharacterSelection = True
+                    pg.event.set_blocked(MOUSEBUTTONDOWN)
                 elif SettingButton.positionCheck(MousePosition):
                     StateInMenu = False
                     StateInOptions = True
@@ -137,12 +140,14 @@ while InMenu:
             OptionMenuText1.render(Window)
             ReturnButton.render(Window)
             pg.display.update()
+            pg.event.set_allowed(MOUSEBUTTONDOWN)
             # Checks for mouse input and position and whether to load the appropriate menu
             if event.type == MOUSEBUTTONDOWN:
                 MousePosition = pg.mouse.get_pos()
                 if ReturnButton.positionCheck(MousePosition):
                     StateInOptions = False
                     StateInMenu = True
+                    pg.event.set_blocked(MOUSEBUTTONDOWN)
         # Character selection menu, 2 players can choose what character they want to play in the game
         elif StateInCharacterSelection:
             # Renders the character selection menu
@@ -156,15 +161,15 @@ while InMenu:
             Char3Button.render(Window)
             Char4Button.render(Window)
             ReturnButton.render(Window)
-            # ---- Blit the rest of the buttons
-            # Checks for input, moves on to next scene if detected both players clicked on a character
             pg.display.update()
+            pg.event.set_allowed(MOUSEBUTTONDOWN)
             if event.type == MOUSEBUTTONDOWN:
                 ButtonClicked = pg.mouse.get_pressed()
                 MousePosition = pg.mouse.get_pos()
                 if ReturnButton.positionCheck(MousePosition):
                     StateInCharacterSelection = False
                     StateInMenu = True
+                    pg.event.set_blocked(MOUSEBUTTONDOWN)
                     P1Char = ""
                     P2Char = ""
                 # Checks where the input was and then who pressed
@@ -190,6 +195,7 @@ while InMenu:
             elif (P1Char != "") and (P2Char != ""):
                 StateInCharacterSelection = False
                 StateInMapSelection = True
+                pg.event.set_blocked(MOUSEBUTTONDOWN)
         # Map selection menu, 1 player can choose what map to play
         elif StateInMapSelection:
             # Renders the map selection menu
@@ -202,6 +208,7 @@ while InMenu:
             BG4Button.render(Window)
             ReturnButton.render(Window)
             pg.display.update()
+            pg.event.set_allowed(MOUSEBUTTONDOWN)
             # Checks for input and position to choose a map
             if event.type == MOUSEBUTTONUP:
                 ButtonClicked = pg.mouse.get_pressed()
@@ -225,7 +232,8 @@ while InMenu:
                 if ChosenMap != "":
                     StateInMapSelection = False
                     InMenu = False
-                    
+    Clock.tick(60)
+
 # Menu loop which lets the player configure game/program data
 print(f"""---------------------
 Starting game...
@@ -296,7 +304,7 @@ while InGame:
             Player2.moveBackward(Window, ChosenMap)
             Player1.render(Window)
         # Actions
-        if PressedKeys[K_HASH]:
+        if PressedKeys[K_RSHIFT]:
             Player2.attackPunch(Player1)
         elif PressedKeys[K_SLASH] or PressedKeys[K_QUESTION]:
             Player2.attackKick(Player1)
@@ -304,9 +312,8 @@ while InGame:
             Player2.heal()
     # Updates any changes to the display and ensures the game runs smoothly
     pg.display.update()
-    Clock.tick(45)
+    Clock.tick(60) # Change to 45 if it breaks
 
-# TODO : Change keyboard mapping
 # TODO : Document code better
 # TODO : Implement better user feedback for buttons and text and player data in game
 # TODO : Allow user changed settings
